@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summoner Stats</title>
+</head>
+<body>
+    <div id="app"></div>
+    
+    <script>
+        // MODEL
+        const model = {
+            page: "summoners", 
+            input: {
+                name: "",
+                winRate: "",
+                gamesPlayed: "",
+                level: "",
+                rank: ""
+            },
+            data: {
+                lastGamesSummoners:{
+                    avgWinrate: "",
+                    avgKDA: "",
+
+
+                },
+
+                
+                summoners: [
+                    { 
+                        name: "Player1", 
+                        winRate: 55, 
+                        gamesPlayed: 200, 
+                        level: 150, 
+                        rank: "Platinum 3", 
+                        games: [
+                            { outcome: "Win", kills: 10, deaths: 3, assists: 5 },
+                            { outcome: "Loss", kills: 7, deaths: 5, assists: 8 },
+                            { outcome: "Win", kills: 12, deaths: 2, assists: 9 },
+                            { outcome: "Loss", kills: 6, deaths: 6, assists: 4 },
+                            { outcome: "Win", kills: 14, deaths: 5, assists: 7 },
+                            { outcome: "Win", kills: 9, deaths: 4, assists: 6 },
+                            { outcome: "Loss", kills: 5, deaths: 7, assists: 8 },
+                            { outcome: "Win", kills: 11, deaths: 3, assists: 10 },
+                            { outcome: "Loss", kills: 8, deaths: 6, assists: 5 },
+                            { outcome: "Win", kills: 10, deaths: 2, assists: 11 }
+                        ]
+                    },
+                    { 
+                        name: "Player2", 
+                        winRate: 48, 
+                        gamesPlayed: 300, 
+                        level: 120, 
+                        rank: "Gold 2",
+                        games: [
+                            { outcome: "Loss", kills: 5, deaths: 2, assists: 10 },
+                            { outcome: "Win", kills: 6, deaths: 4, assists: 9 },
+                            { outcome: "Loss", kills: 7, deaths: 6, assists: 5 },
+                            { outcome: "Win", kills: 10, deaths: 3, assists: 7 },
+                            { outcome: "Win", kills: 8, deaths: 5, assists: 12 },
+                            { outcome: "Loss", kills: 4, deaths: 7, assists: 6 },
+                            { outcome: "Win", kills: 11, deaths: 2, assists: 10 },
+                            { outcome: "Loss", kills: 9, deaths: 6, assists: 8 },
+                            { outcome: "Win", kills: 7, deaths: 4, assists: 5 },
+                            { outcome: "Loss", kills: 6, deaths: 3, assists: 9 }
+                        ]
+                    }
+                ]
+            }
+        };
+        //VIEW
+        updateView();
+        function updateView(){
+            const app = document.getElementById("app");
+            let html = '<button onclick="changePage(\'summoners\')">Summoners</button>';
+            html += '<button onclick="changePage(\'rankPrediction\')">Rank Prediction</button>';
+            
+            switch(model.page) {
+                case "summoners":
+                    html += "<h2>Summoners:</h2><ul>";
+                    for(let summoner of model.data.summoners){
+                        html += `<li><strong>${summoner.name}</strong> - WR: ${summoner.winRate}% | Games: ${summoner.gamesPlayed} | Level: ${summoner.level} | Rank: ${summoner.rank}
+                            <ul>`;
+                        for(let game of summoner.games){
+                            html += `<li>${game.outcome} - K/D/A: ${game.kills}/${game.deaths}/${game.assists}</li>`;
+                        }
+                        html += "</ul></li>";
+                    }
+                    html += "</ul>";
+                    break;
+                
+                case "rankPrediction":
+                    html += "<h2>Rank Prediction</h2>";
+                    
+                    break;
+            }
+            app.innerHTML = html;
+        }
+
+        function changePage(page) {
+            model.page = page;
+            updateView();
+        }
+        
+        //CONTROLLER
+        
+        function getGameAvgStats(summoner) {
+            //Først deklarere variabler som skal hente ut innhold fra data
+            //Så bruk gjennomsnittformelen for å få verdiene som senere skal returneres
+
+            return 'her kommer avgWinrate og avgKDA'
+        }
+        function predictRank(){
+            //her skal inn en sannsynlighetsberegning på et utfall som har med rank å gjøre basert på det som er inn i DATA
+            return "rank kommer her"
+        }
+
+        
+    
+    </script>
+</body>
+</html>
