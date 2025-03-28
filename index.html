@@ -66,6 +66,44 @@
                             { outcome: "Win", kills: 7, deaths: 4, assists: 5 },
                             { outcome: "Loss", kills: 6, deaths: 3, assists: 9 }
                         ]
+                    },
+                    { 
+                        name: "Faker", 
+                        winRate: 65, 
+                        gamesPlayed: 800, 
+                        level: 250, 
+                        rank: "Challenger 1000 LP", 
+                        games: [
+                            { outcome: "Win", kills: 15, deaths: 2, assists: 10 },
+                            { outcome: "Win", kills: 12, deaths: 1, assists: 8 },
+                            { outcome: "Win", kills: 18, deaths: 3, assists: 12 },
+                            { outcome: "Win", kills: 14, deaths: 2, assists: 7 },
+                            { outcome: "Win", kills: 16, deaths: 1, assists: 9 },
+                            { outcome: "Win", kills: 13, deaths: 3, assists: 11 },
+                            { outcome: "Loss", kills: 10, deaths: 5, assists: 6 },
+                            { outcome: "Win", kills: 20, deaths: 2, assists: 14 },
+                            { outcome: "Win", kills: 17, deaths: 4, assists: 9 },
+                            { outcome: "Win", kills: 14, deaths: 1, assists: 10 }
+                        ]
+                    },
+                    { 
+                        name: "Dopa", 
+                        winRate: 70, 
+                        gamesPlayed: 900, 
+                        level: 280, 
+                        rank: "Challenger 1200 LP",
+                        games: [
+                            { outcome: "Win", kills: 20, deaths: 1, assists: 12 },
+                            { outcome: "Win", kills: 18, deaths: 2, assists: 10 },
+                            { outcome: "Win", kills: 25, deaths: 3, assists: 15 },
+                            { outcome: "Win", kills: 22, deaths: 1, assists: 11 },
+                            { outcome: "Win", kills: 19, deaths: 2, assists: 13 },
+                            { outcome: "Win", kills: 21, deaths: 3, assists: 14 },
+                            { outcome: "Win", kills: 23, deaths: 1, assists: 16 },
+                            { outcome: "Loss", kills: 17, deaths: 5, assists: 9 },
+                            { outcome: "Win", kills: 26, deaths: 2, assists: 14 },
+                            { outcome: "Win", kills: 24, deaths: 3, assists: 12 }
+                        ]
                     }
                 ]
             }
@@ -91,10 +129,17 @@
                     html += "</ul>";
                     break;
                 
-                case "rankPrediction":
-                    html += "<h2>Rank Prediction</h2>";
-                    
-                    break;
+                    case "rankPrediction":
+                        html += `<h2>Rank Prediction</h2>`;
+                        html += `<h3>Summoner stats last 10 games:</h3>`;
+    
+                        for (let summoner of model.data.summoners) {
+                            let stats = getGameAvgStats(summoner);
+                            html += `<h3>${summoner.name}</h3>
+                                    <p>Average Winrate: ${stats.avgWinrate}%</p>
+                                    <p>Average KDA: ${stats.avgKDA}</p>`;
+                        }
+                        break;
             }
             app.innerHTML = html;
         }
@@ -107,14 +152,35 @@
         //CONTROLLER
         
         function getGameAvgStats(summoner) {
-            //Først deklarere variabler som skal hente ut innhold fra data
-            //Så bruk gjennomsnittformelen for å få verdiene som senere skal returneres
+            let totalWins = 0;
+            let totalKills = 0;
+            let totalDeaths = 0;
+            let totalAssists = 0;
+            let totalGames = summoner.games.length;
 
-            return 'her kommer avgWinrate og avgKDA'
+            for (let game of summoner.games) {
+                if (game.outcome === "Win") totalWins++;
+                    totalKills += game.kills;
+                    totalDeaths += game.deaths;
+                    totalAssists += game.assists;
+            }
+
+            let avgWinrate = ((totalWins / totalGames) * 100).toFixed(2);
+            let avgKDA = ((totalKills + totalAssists) / Math.max(1, totalDeaths)).toFixed(2); 
+
+            model.data.lastGamesSummoners.avgWinrate = avgWinrate;
+            model.data.lastGamesSummoners.avgKDA = avgKDA;
+    
+            return { avgWinrate, avgKDA };
+}
+        function getRankChange(){
+            //her skal en sjekke for endringer i rank over antall games, og returnere om en har gått opp, ned eller stagnert
+            return null;
         }
-        function predictRank(){
-            //her skal inn en sannsynlighetsberegning på et utfall som har med rank å gjøre basert på det som er inn i DATA
-            return "rank kommer her"
+
+        function compareWr(){
+            //her skal vi sammenligne wr basert på antall games, og returnere differansen mellom winrates'a 
+            return null;
         }
 
         
