@@ -78,7 +78,7 @@
             let avgKDA = ((totalKills + totalAssists) / Math.max(1, totalDeaths)).toFixed(2);
             let avgCSPerMin = (totalCS / totalDuration).toFixed(2); 
 
-            model.data.lastGamesSummoners.avgWinrate = avgWinrate;
+            model.data.lastGamesSummoners.avgWinrate = avgWinrate;   //TODO: Her må lagre desse stats'a i form av et array
             model.data.lastGamesSummoners.avgKDA = avgKDA;
             model.data.lastGamesSummoners.avgCSPerMin = avgCSPerMin; 
 
