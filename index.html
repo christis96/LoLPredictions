@@ -17,6 +17,8 @@
             const app = document.getElementById("app");
             let html = '<button onclick="changePage(\'summoners\')">Summoners</button>';
             html += '<button onclick="changePage(\'Avg stats\')">Avg stats</button>';
+
+            getAllSummonersAvgStats();
             
             switch(model.page) {
                 case "summoners":
@@ -32,7 +34,7 @@
                     html += "</ul>";
                     break;
                 
-                    case "Avg stats":
+                case "Avg stats":
                         html += `<h2>Avg stats</h2>`;
                         html += `<h3>Summoner stats last 10 games:</h3>`;
     
@@ -78,12 +80,30 @@
             let avgKDA = ((totalKills + totalAssists) / Math.max(1, totalDeaths)).toFixed(2);
             let avgCSPerMin = (totalCS / totalDuration).toFixed(2); 
 
-            model.data.lastGamesSummoners.avgWinrate = avgWinrate;   //TODO: Her må lagre desse stats'a i form av et array
-            model.data.lastGamesSummoners.avgKDA = avgKDA;
-            model.data.lastGamesSummoners.avgCSPerMin = avgCSPerMin; 
 
             return { avgWinrate, avgKDA, avgCSPerMin }; 
         }
+
+        function updateSummonerAvgStats(summoner) {
+            const stats = getGameAvgStats(summoner);
+
+            model.data.lastGamesSummoners.push({
+                name: summoner.name,
+                avgWinrate: stats.avgWinrate,
+                avgKDA: stats.avgKDA,
+                avgCSPerMin: stats.avgCSPerMin
+            });
+        }
+
+        function getAllSummonersAvgStats() {
+            model.data.lastGamesSummoners = [];
+
+            for (let summoner of model.data.summoners) {
+                updateSummonerAvgStats(summoner); 
+            }
+        }
+
+        
         function getRankChange(summoner){
             //her skal en sjekke for endringer i rank over antall games, og returnere om en har gått opp, ned eller stagnert
             return null;

@@ -10,13 +10,8 @@ const model = {
         csPerMin: ""
     },
     data: {
-        lastGamesSummoners:{            //TODO: gjør det mulig for denne delen å ta inn array fra getavgstats funksjonen
-            avgWinrate: "",
-            avgKDA: "",
-
-
-        },
-
+        lastGamesSummoners: [], 
+        
         
         summoners: [
             { 
