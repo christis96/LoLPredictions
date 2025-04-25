@@ -1,4 +1,7 @@
 // MODEL
+
+//TODO: Add elo as a stat for each player
+//TODO: Add who the players was in every game
 const model = {
     page: "summoners", 
     input: {
