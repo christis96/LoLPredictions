@@ -109,19 +109,91 @@
             return null;
         }
 
-        function getChanceOfWin(summoner){
-            //her skal en gjøre en sannsynlighetsberegning på utfallet av game'et basert elo difference på lagene
-            return null;
+        function calculateTrueSkillWinChance(mu1, sigma1, mu2, sigma2) {
+            const beta = 4.1667; 
+            const denom = Math.sqrt(2 * beta * beta + sigma1 * sigma1 + sigma2 * sigma2);
+            const diff = mu1 - mu2;
+            const winProb = 1 / (1 + Math.exp(-diff / denom));
+            return (winProb * 100).toFixed(2);
         }
 
         function compareStats(arr){
             //her skal jeg ta inn et array for å gjøre sammenligninger med ulike summoners for å se omm det er en sammenheng med noe
             return null;
         }
-        function calculateAvgElo(){
-            //her skal jeg lage en funksjon som kalkulerer average elo av et team av en match
-            return null;
+        function calculateTeamTrueSkill(team) {
+            let totalMu = 0;
+            let totalSigma = 0;
+            for (let summoner of team) {
+                totalMu += summoner.mu || 25;
+                totalSigma += summoner.sigma || 8.333;
+            }
+            return {
+                avgMu: totalMu / team.length,
+                avgSigma: totalSigma / team.length
+            };
         }
+
+        function getChanceOfWin(summoner, game){
+            const team = game.team;
+            const enemyTeam = game.enemyTeam;
+            if (!team || !enemyTeam) return "-";
+
+            const { avgMu: mu1, avgSigma: sigma1 } = calculateTeamTrueSkill(team);
+            const { avgMu: mu2, avgSigma: sigma2 } = calculateTeamTrueSkill(enemyTeam);
+
+            return calculateTrueSkillWinChance(mu1, sigma1, mu2, sigma2);
+        }
+
+        function estimateMuFromRank(rank) {
+            const rankToMu = {
+                Iron: 10,
+                Bronze: 15,
+                Silver: 20,
+                Gold: 25,
+                Platinum: 30,
+                Diamond: 35,
+                Master: 40,
+                Grandmaster: 45,
+                Challenger: 50,
+            };
+            return rankToMu[rank] || 25;
+        }
+
+        function estimateSigmaFromRank(rank, gamesPlayed) {
+            // Base sigma value: higher uncertainty at lower ranks
+            let baseSigma;
+
+            // Adjust sigma based on rank
+            if (rank.includes("Challenger")) {
+                baseSigma = 4; // Challenger has the smallest sigma
+            } else if (rank.includes("Grandmaster")) {
+                baseSigma = 5;
+            } else if (rank.includes("Master")) {
+                baseSigma = 6;
+            } else if (rank.includes("Diamond")) {
+                baseSigma = 7;
+            } else if (rank.includes("Platinum")) {
+                baseSigma = 8;
+            } else if (rank.includes("Gold")) {
+                baseSigma = 9;
+            } else if (rank.includes("Silver")) {
+                baseSigma = 10;
+            } else {
+                baseSigma = 12; // Default for lower ranks
+            }
+
+            // Adjust sigma based on number of games played
+            // The more games played, the lower the uncertainty
+            if (gamesPlayed >= 1000) {
+                baseSigma *= 0.7; // Significant reduction after 1000 games
+            } else if (gamesPlayed >= 500) {
+                baseSigma *= 0.85; // Slight reduction after 500 games
+            }
+
+            return baseSigma;
+        }
+
 
         function addEloPoints(){
         //denne funksjonen skal putte på elo-points basert på sannsyn for vinn
